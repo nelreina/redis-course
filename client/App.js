@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-
+import { Switch, Route } from 'react-router-dom';
+import Nav from './Nav';
 class App extends Component {
   state = {};
   setStateAsync = state => {
@@ -26,12 +27,13 @@ class App extends Component {
   render() {
     return (
       <div>
-        <h3>Redis Course </h3>
-        {this.state.error ? (
-          <pre>{JSON.stringify(this.state.error, null, 2)}</pre>
-        ) : (
-          <pre>{JSON.stringify(this.state.data, null, 2)}</pre>
-        )}
+        <div className="container">
+          <Nav />
+          <Switch>
+            <Route exact path="/" render={() => <h3>Home</h3>} />
+            <Route path="/add-user" render={() => <h3>Add User</h3>} />
+          </Switch>
+        </div>
       </div>
     );
   }
