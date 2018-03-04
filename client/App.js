@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import Nav from './Nav';
+import Home from './Home';
+import AddUser from './AddUser';
 class App extends Component {
   state = {};
   setStateAsync = state => {
@@ -30,8 +32,8 @@ class App extends Component {
         <div className="container">
           <Nav />
           <Switch>
-            <Route exact path="/" render={() => <h3>Home</h3>} />
-            <Route path="/add-user" render={() => <h3>Add User</h3>} />
+            <Route exact path="/" component={Home} />
+            <Route path="/add-user" component={AddUser} />
           </Switch>
         </div>
       </div>
