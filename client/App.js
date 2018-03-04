@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 
 class App extends Component {
-  state = {
-    text: 'Some state'
-  };
+  state = {};
   setStateAsync = state => {
     return new Promise(resolve => {
       this.setState(state, resolve);
@@ -34,7 +32,6 @@ class App extends Component {
         ) : (
           <pre>{JSON.stringify(this.state.data, null, 2)}</pre>
         )}
-        <p>{this.state.text}</p>
       </div>
     );
   }
