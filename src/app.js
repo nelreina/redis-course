@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 const client = redis.createClient();
 const hgetAllAsync = promisify(client.hgetall).bind(client);
-const hsetAsync = promisify(client.hset).bind(client);
+const hsetAsync = promisify(client.hmset).bind(client);
 
 client.on('connect', () => console.log('Connected to redis...'));
 
@@ -38,7 +38,7 @@ app.get('/api/search/:id', async (req, res) => {
     if (user) {
       res.json(user);
     } else {
-      res.json({ error: `User with id \"${id}\" not found!` });
+      res.json({ message: `User with id \"${id}\" not found!` });
     }
   } catch (error) {
     console.error(error);
@@ -47,9 +47,18 @@ app.get('/api/search/:id', async (req, res) => {
 });
 
 app.post('/api/add-user', async (req, res) => {
-  const { id, field, value } = req.body;
+  const fields = [];
+  const keys = Object.keys(req.body);
+  keys.forEach(k => {
+    if (k !== 'id') {
+      fields.push(k);
+      fields.push(req.body[k]);
+    }
+  });
+
+  const { id } = req.body;
   try {
-    const resp = await hsetAsync(id, field, value);
+    const resp = await hsetAsync(id, fields);
     res.json(resp);
   } catch (error) {
     console.error(error);
