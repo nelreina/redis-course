@@ -19,6 +19,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 const client = redis.createClient();
 const hgetAllAsync = promisify(client.hgetall).bind(client);
+const hsetAsync = promisify(client.hset).bind(client);
 
 client.on('connect', () => console.log('Connected to redis...'));
 
@@ -41,6 +42,18 @@ app.get('/api/search/:id', async (req, res) => {
     }
   } catch (error) {
     console.error(error);
+    res.send('Error occured on the server!');
+  }
+});
+
+app.post('/api/add-user', async (req, res) => {
+  const { id, field, value } = req.body;
+  try {
+    const resp = await hsetAsync(id, field, value);
+    res.json(resp);
+  } catch (error) {
+    console.error(error);
+    res.send('Error occured on the server!');
   }
 });
 
