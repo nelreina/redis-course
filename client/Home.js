@@ -9,6 +9,7 @@ class Home extends Component {
   };
   search = async evt => {
     evt.preventDefault();
+    if (!this.text.value) return;
     const list = await get(`/search/${this.text.value}`);
     await this.setStateAsync({ list });
     this.text.value = '';
@@ -26,6 +27,7 @@ class Home extends Component {
               ref={text => (this.text = text)}
               placeholder="Search Users By ID"
             />
+            <input type="submit" className="btn btn-primary" value="Search" />
           </div>
         </form>
         <div className="user-list">
