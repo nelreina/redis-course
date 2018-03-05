@@ -22,6 +22,10 @@ app.get('/api/ping', (req, res) => {
   res.json({ message: 'PONG' });
 });
 
+app.get('/api/search/:id', async (req, res) => {
+  res.json([`${req.params.id}`]);
+});
+
 app.listen(PORT, () => {
   console.info(`App is running on port ${PORT}`);
 });
