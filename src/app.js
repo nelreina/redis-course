@@ -4,6 +4,7 @@ const redis = require('redis');
 const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const { promisify } = require('util');
 require('dotenv').config();
 const PORT = process.env.PORT;
 
@@ -14,6 +15,13 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+// Redis Client
+
+const client = redis.createClient();
+const hgetAllAsync = promisify(client.hgetall).bind(client);
+
+client.on('connect', () => console.log('Connected to redis...'));
+
 // Method Override (to be able to send delete request)
 app.use(methodOverride('_method'));
 
@@ -23,7 +31,17 @@ app.get('/api/ping', (req, res) => {
 });
 
 app.get('/api/search/:id', async (req, res) => {
-  res.json([`${req.params.id}`]);
+  try {
+    const { id } = req.params;
+    const user = await hgetAllAsync(id);
+    if (user) {
+      res.json(user);
+    } else {
+      res.json({ error: `User with id \"${id}\" not found!` });
+    }
+  } catch (error) {
+    console.error(error);
+  }
 });
 
 app.listen(PORT, () => {
